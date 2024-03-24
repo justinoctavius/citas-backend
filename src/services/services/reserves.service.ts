@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReservesEntity } from '../entities/reserves.entity';
 import { Repository } from 'typeorm';
@@ -35,11 +39,11 @@ export class ReservesService {
     const schedule = await this.findScheduleById(scheduleId);
 
     if (!schedule) {
-      throw new Error('Schedule not found');
+      throw new NotFoundException('Schedule not found');
     }
 
     if (schedule.isReserved) {
-      throw new Error('Schedule already reserved');
+      throw new BadRequestException('Schedule already reserved');
     }
 
     await this.reservesRepository.save({
@@ -83,21 +87,22 @@ export class ReservesService {
         user: { id: userId },
         service: { id: serviceId },
       },
+      relations: ['schedule'],
     });
 
     if (!reserve) {
-      throw new Error('Reserve not found');
+      throw new NotFoundException('Reserve not found');
     }
 
     const schedule = await this.findScheduleById(reserve.schedule.id);
 
     if (!schedule) {
-      throw new Error('Schedule not found');
+      throw new NotFoundException('Schedule not found');
     }
+
+    await this.reservesRepository.remove(reserve);
 
     schedule.isReserved = false;
     await this.schedulesRepository.save(schedule);
-
-    return await this.reservesRepository.remove(reserve);
   };
 }
