@@ -16,21 +16,23 @@ export class UserService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async createIfNotExists({ email, ...rest }: CreateUserDto): Promise<void> {
+  async createIfNotExists({ email, ...rest }: CreateUserDto): Promise<User> {
     const userFounded = await this.findByEmail({
       email,
     });
 
     if (userFounded) {
-      return;
+      return userFounded;
     }
 
-    const newUser = {
+    const newUser = this.usersRepository.create({
       ...rest,
       email,
       id: uuid.v4(),
-    };
+    });
     await this.usersRepository.save(newUser);
+
+    return newUser;
   }
 
   async findByEmail({ email }: { email: string }): Promise<User> {

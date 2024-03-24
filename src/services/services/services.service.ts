@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ServicesEntity } from '../entities/service.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Pagination } from 'src/common/interfaces/base.repository';
 
 @Injectable()
@@ -28,6 +28,7 @@ export class ServicesService {
   ): Promise<ServicesEntity> => {
     return await this.servicesRepository.findOne({
       where: { id, user: { id: userId } },
+      relations: ['schedules', 'reserves'],
     });
   };
 
@@ -36,8 +37,12 @@ export class ServicesService {
   }: {
     query: string;
   }): Promise<ServicesEntity[]> => {
-    return await this.servicesRepository.find({
-      where: { name: query },
-    });
+    return await this.servicesRepository
+      .createQueryBuilder('services')
+      .where('services.name ILIKE :name', {
+        name: `%${query}%`,
+      })
+      .leftJoinAndSelect('services.schedules', 'schedules')
+      .getMany();
   };
 }

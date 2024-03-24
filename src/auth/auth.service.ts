@@ -20,13 +20,8 @@ export class AuthService {
   ) {}
 
   async passwordlessSendOtp({ email }: PasswordlessDto) {
-    const user = await this.userService.findByEmail({
-      email,
-    });
-
-    if (user) {
-      await this.passwordlessService.sendOtp(user.id);
-    }
+    const user = await this.userService.createIfNotExists({ email });
+    await this.passwordlessService.sendOtp(user);
   }
 
   async passwordlessValidate({ otp, email }: PasswordlessValidateDto) {

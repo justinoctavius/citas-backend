@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -29,16 +30,23 @@ export class ServicesController {
     return await this.servicesService.findServices(user.id, { skip, take });
   }
 
+  @Get('search')
+  async searchServices(@Query() query: { query: string }) {
+    const { query: searchQuery } = query;
+
+    if (searchQuery.length < 3) {
+      throw new BadRequestException('Query must be at least 3 characters');
+    }
+
+    return await this.servicesService.searchServices({
+      query: searchQuery.toLowerCase().trim(),
+    });
+  }
+
   @Get(':id')
   @UseGuards(TokenGuard)
   async findServiceById(@Param('id') id: string, @GetUser() user: User) {
     return await this.servicesService.findServiceById(user.id, id);
-  }
-
-  @Get('search')
-  async searchServices(@Query() query: { query: string }) {
-    const { query: searchQuery } = query;
-    return await this.servicesService.searchServices({ query: searchQuery });
   }
 
   @Get('reserves')

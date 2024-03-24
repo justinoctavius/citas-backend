@@ -10,6 +10,7 @@ import {
 import { ScheduleEntity } from './schedule.entity';
 import { ServicesEntity } from './service.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Transform } from 'class-transformer';
 
 @Entity('reserves')
 export class ReservesEntity extends BaseEntity {
@@ -17,12 +18,18 @@ export class ReservesEntity extends BaseEntity {
   id: string;
 
   @Column({ name: 'first_name' })
+  @Transform(({ value }) => value.toLowerCase(), { toClassOnly: true })
+  @Transform(({ value }) => value.toLowerCase(), { toPlainOnly: true })
   firstName: string;
 
   @Column({ name: 'last_name' })
+  @Transform(({ value }) => value.toLowerCase(), { toClassOnly: true })
+  @Transform(({ value }) => value.toLowerCase(), { toPlainOnly: true })
   lastName: string;
 
   @Column({ name: 'email' })
+  @Transform(({ value }) => value.toLowerCase(), { toClassOnly: true })
+  @Transform(({ value }) => value.toLowerCase(), { toPlainOnly: true })
   email: string;
 
   @OneToOne(() => ScheduleEntity, (schedule) => schedule.reserve)

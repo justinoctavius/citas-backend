@@ -4,6 +4,7 @@ import { Passwordless } from './entities/passwordless.entity';
 import { Repository } from 'typeorm';
 import { ConfigService } from 'src/config/config.service';
 import { generateOtp } from 'src/common/utils/otp.util';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class PasswordlessService {
@@ -17,10 +18,10 @@ export class PasswordlessService {
     this.expireIn = +this.configService.get('PASSWORDLESS_OTP_EXPIRE_IN_SEC');
   }
 
-  async sendOtp(userId: string) {
+  async sendOtp(user: User) {
     //TODO: send otp to user email
 
-    return await this.createOtp(userId);
+    return await this.createOtp(user.id);
   }
 
   async verify({ userId, otp }: { userId: string; otp: string }) {
