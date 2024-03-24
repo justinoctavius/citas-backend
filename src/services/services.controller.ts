@@ -43,12 +43,6 @@ export class ServicesController {
     });
   }
 
-  @Get(':id')
-  @UseGuards(TokenGuard)
-  async findServiceById(@Param('id') id: string, @GetUser() user: User) {
-    return await this.servicesService.findServiceById(user.id, id);
-  }
-
   @Get('reserves')
   @UseGuards(TokenGuard)
   async findReserves(@Query() query: Pagination, @GetUser() user: User) {
@@ -57,6 +51,12 @@ export class ServicesController {
       skip,
       take,
     });
+  }
+
+  @Get(':id')
+  @UseGuards(TokenGuard)
+  async findServiceById(@Param('id') id: string, @GetUser() user: User) {
+    return await this.servicesService.findServiceById(user.id, id);
   }
 
   @Post(':id/schedules/:scheduleId/reserve')

@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { ReserveScheduleDto } from '../dtos/reserve-schedyles.dto';
 import { ScheduleEntity } from '../entities/schedule.entity';
 import { Pagination } from 'src/common/interfaces/base.repository';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ReservesService {
@@ -41,10 +42,8 @@ export class ReservesService {
       throw new Error('Schedule already reserved');
     }
 
-    schedule.isReserved = true;
-    await this.schedulesRepository.save(schedule);
-
-    return await this.reservesRepository.save({
+    await this.reservesRepository.save({
+      id: uuidv4(),
       email,
       firstName,
       lastName,
@@ -52,6 +51,9 @@ export class ReservesService {
       service: { id: serviceId },
       user: { id: userId },
     });
+
+    schedule.isReserved = true;
+    await this.schedulesRepository.save(schedule);
   };
 
   findScheduleById = async (id: string): Promise<ScheduleEntity> => {
@@ -60,12 +62,14 @@ export class ReservesService {
 
   findReservesByUserId = async (
     userId: string,
-    { skip, take }: Pagination,
+    { skip = 0, take = 20 }: Pagination,
   ): Promise<ReservesEntity[]> => {
     return await this.reservesRepository.find({
       where: { user: { id: userId } },
       skip,
       take,
+      relations: ['service', 'schedule'],
+      loadEagerRelations: false,
     });
   };
 

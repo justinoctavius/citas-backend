@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryColumn,
@@ -20,10 +21,11 @@ export class ScheduleEntity extends BaseEntity {
   @Column({ type: 'timestamp' })
   to: Date;
 
-  @Column()
+  @Column({ name: 'is_reserved' })
   isReserved: boolean;
 
   @ManyToOne(() => ServicesEntity, (service) => service.schedules)
+  @JoinColumn({ name: 'service_id' })
   service: ServicesEntity;
 
   @OneToOne(() => ReservesEntity, (reserve) => reserve.schedule)
