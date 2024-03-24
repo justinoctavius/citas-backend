@@ -5,8 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReservesEntity } from '../entities/reserves.entity';
-import { Repository } from 'typeorm';
-import { ReserveScheduleDto } from '../dtos/reserve-schedyles.dto';
+import { MoreThanOrEqual, Repository } from 'typeorm';
 import { ScheduleEntity } from '../entities/schedule.entity';
 import { Pagination } from 'src/common/interfaces/base.repository';
 import { v4 as uuidv4 } from 'uuid';
@@ -62,6 +61,18 @@ export class ReservesService {
 
   findScheduleById = async (id: string): Promise<ScheduleEntity> => {
     return await this.schedulesRepository.findOne({ where: { id } });
+  };
+
+  findScheduleByServiceId = async (
+    serviceId: string,
+  ): Promise<ScheduleEntity[]> => {
+    return await this.schedulesRepository.find({
+      where: {
+        service: { id: serviceId },
+        isReserved: false,
+        from: MoreThanOrEqual(new Date()),
+      },
+    });
   };
 
   findReservesByUserId = async (

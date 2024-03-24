@@ -22,10 +22,6 @@ export class Passwordless extends BaseEntity {
   @Column({ name: 'expire_in' })
   expireIn: number;
 
-  @Column({ name: 'user_id', unique: true })
-  userId: string;
-
-  @OneToOne(() => User, (user) => user.passwordless)
-  @JoinColumn({ name: 'user_id' })
-  user: User;
+  @Column({ name: 'email' })
+  email: string;
 }

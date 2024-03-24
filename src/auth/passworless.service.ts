@@ -18,15 +18,15 @@ export class PasswordlessService {
     this.expireIn = +this.configService.get('PASSWORDLESS_OTP_EXPIRE_IN_SEC');
   }
 
-  async sendOtp(user: User) {
+  async sendOtp(email: string) {
     //TODO: send otp to user email
 
-    return await this.createOtp(user.id);
+    return await this.createOtp(email);
   }
 
-  async verify({ userId, otp }: { userId: string; otp: string }) {
+  async verify({ email, otp }: { email: string; otp: string }) {
     const otpFounded = await this.passwordlessRepository.findOne({
-      where: { otp, user: { id: userId } },
+      where: { otp, email },
     });
 
     if (!otpFounded || otpFounded?.expireAt?.getTime() <= Date.now()) {
@@ -40,14 +40,14 @@ export class PasswordlessService {
     return true;
   }
 
-  private async createOtp(userId: string) {
+  private async createOtp(email: string) {
     const otp = generateOtp();
 
-    await this.passwordlessRepository.delete({ user: { id: userId } });
+    await this.passwordlessRepository.delete({ email });
 
     const passwordlessOtp = this.passwordlessRepository.create({
       otp: otp,
-      user: { id: userId },
+      email,
       expireIn: this.expireIn,
       expireAt: this.getExpireAt(),
     });

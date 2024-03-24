@@ -20,21 +20,12 @@ export class AuthService {
   ) {}
 
   async passwordlessSendOtp({ email }: PasswordlessDto) {
-    const user = await this.userService.createIfNotExists({ email });
-    await this.passwordlessService.sendOtp(user);
+    await this.passwordlessService.sendOtp(email);
   }
 
   async passwordlessValidate({ otp, email }: PasswordlessValidateDto) {
-    const user = await this.userService.findByEmail({
-      email,
-    });
-
-    if (!user) {
-      throw new UnauthorizedException('otp invalid');
-    }
-
     const isValid = await this.passwordlessService.verify({
-      userId: user.id,
+      email,
       otp,
     });
 
@@ -42,7 +33,7 @@ export class AuthService {
       throw new UnauthorizedException('otp invalid');
     }
 
-    await this.userService.createIfNotExists({ email });
+    const user = await this.userService.createIfNotExists({ email });
 
     const payload = this.buildTokenPayload(user);
 

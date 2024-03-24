@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Query,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { Pagination } from 'src/common/interfaces/base.repository';
@@ -59,6 +60,11 @@ export class ServicesController {
     return await this.servicesService.findServiceById(user.id, id);
   }
 
+  @Get(':id/schedules')
+  async findSchedules(@Param('id') id: string) {
+    return await this.reservesService.findScheduleByServiceId(id);
+  }
+
   @Post(':id/schedules/:scheduleId/reserve')
   @UseGuards(TokenGuard)
   async reserveSchedule(
@@ -67,6 +73,10 @@ export class ServicesController {
     @Body() body: ReserveScheduleDto,
     @GetUser() user: User,
   ) {
+    if (user.email !== body.email) {
+      throw new UnauthorizedException('Email must be the same as the user');
+    }
+
     return await this.reservesService.reserveSchedule(user.id, {
       scheduleId,
       serviceId: id,

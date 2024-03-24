@@ -12,9 +12,6 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
-  @OneToOne(() => Passwordless, (passwordless) => passwordless.user)
-  passwordless: Passwordless;
-
   @OneToMany(() => ServicesEntity, (service) => service.user)
   services: ServicesEntity[];
 
