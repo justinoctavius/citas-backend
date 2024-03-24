@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { ConfigService } from 'src/config/config.service';
 import { generateOtp } from 'src/common/utils/otp.util';
 import { User } from 'src/users/entities/user.entity';
+import { SMTPServices } from 'src/common/services/smtp/smtp.service';
+import { buildTemplate } from './resources/passwordless-otp';
 
 @Injectable()
 export class PasswordlessService {
@@ -14,15 +16,24 @@ export class PasswordlessService {
     @InjectRepository(Passwordless)
     private readonly passwordlessRepository: Repository<Passwordless>,
     private readonly configService: ConfigService,
+    private readonly smtpServices: SMTPServices,
   ) {
     this.expireIn = +this.configService.get('PASSWORDLESS_OTP_EXPIRE_IN_SEC');
   }
 
   async sendOtp(email: string) {
-    //TODO: send otp to user email
-
-    return await this.createOtp(email);
+    const otp = await this.createOtp(email);
+    await this.sendOTPEmail(otp, email);
   }
+
+  sendOTPEmail = async (otp: string, email: string) => {
+    const template = buildTemplate(otp);
+    await this.smtpServices.sendEmail({
+      htmlContent: template,
+      subject: 'NaoBuquet - Código de verificación',
+      to: [{ email, name: 'Usuario' }],
+    });
+  };
 
   async verify({ email, otp }: { email: string; otp: string }) {
     const otpFounded = await this.passwordlessRepository.findOne({

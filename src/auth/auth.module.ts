@@ -7,9 +7,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PasswordlessService } from './passworless.service';
 import { ConfigModule } from 'src/config/config.module';
 import { Passwordless } from './entities/passwordless.entity';
+import { SMTPServicesModule } from 'src/common/services/smtp/smtp.module';
 
 @Module({
   imports: [
+    SMTPServicesModule,
     TypeOrmModule.forFeature([Passwordless]),
     UserModule,
     TokenModule,
