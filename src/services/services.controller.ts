@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -16,6 +17,7 @@ import { ServicesService } from './services/services.service';
 import { TokenGuard } from 'src/common/guards/auth/token.guard';
 import { GetUser } from 'src/common/decorators/users/user.decorator';
 import { User } from 'src/users/entities/user.entity';
+import { CreateServiceDto } from './dtos/create-services.dto';
 
 @Controller('services')
 export class ServicesController {
@@ -29,6 +31,18 @@ export class ServicesController {
   async findServices(@Query() query: Pagination, @GetUser() user: User) {
     const { skip, take } = query;
     return await this.servicesService.findServices(user.id, { skip, take });
+  }
+
+  @Post()
+  @UseGuards(TokenGuard)
+  async createService(@Body() body: CreateServiceDto, @GetUser() user: User) {
+    return await this.servicesService.createService(user.id, body);
+  }
+
+  @Delete(':id')
+  @UseGuards(TokenGuard)
+  async deleteService(@Param('id') id: string, @GetUser() user: User) {
+    return await this.servicesService.deleteService(user.id, id);
   }
 
   @Get('search')

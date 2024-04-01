@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   Column,
   Entity,
   JoinColumn,
@@ -11,6 +10,7 @@ import { ScheduleEntity } from './schedule.entity';
 import { ReservesEntity } from './reserves.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Transform } from 'class-transformer';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity('services')
 export class ServicesEntity extends BaseEntity {
@@ -30,6 +30,9 @@ export class ServicesEntity extends BaseEntity {
 
   @Column({ name: 'user_id' })
   userId: string;
+
+  @Column({ name: 'deleted_at', nullable: true })
+  deletedAt: Date;
 
   @OneToMany(() => ScheduleEntity, (schedule) => schedule.service, {
     cascade: true,
