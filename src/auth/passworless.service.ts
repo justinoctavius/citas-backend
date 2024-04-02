@@ -56,6 +56,10 @@ export class PasswordlessService {
 
     await this.passwordlessRepository.delete({ email });
 
+    console.log(
+      'expireInVars',
+      this.configService.get('PASSWORDLESS_OTP_EXPIRE_IN_SEC'),
+    );
     console.log('expireIn', this.expireIn);
     console.log('expireAt', this.getExpireAt().getTime().toString());
 
