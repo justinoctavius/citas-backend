@@ -56,6 +56,7 @@ export class PasswordlessService {
 
     await this.passwordlessRepository.delete({ email });
 
+    console.log('expireIn', this.expireIn);
     console.log('expireAt', this.getExpireAt().getTime().toString());
 
     const passwordlessOtp = this.passwordlessRepository.create({
