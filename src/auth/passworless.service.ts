@@ -40,7 +40,7 @@ export class PasswordlessService {
       where: { otp, email },
     });
 
-    if (!otpFounded || new Date(otpFounded?.expireAt).getTime() <= Date.now()) {
+    if (!otpFounded || otpFounded?.expireAt.getTime() <= Date.now()) {
       return false;
     }
 
