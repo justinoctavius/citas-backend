@@ -64,7 +64,7 @@ export class PasswordlessService {
       otp: otp,
       email,
       expireIn: this.expireIn,
-      expireAt: this.getExpireAt().getTime().toString(),
+      expireAt: this.getExpireAt().getTime(),
     });
 
     await this.passwordlessRepository.save(passwordlessOtp);
