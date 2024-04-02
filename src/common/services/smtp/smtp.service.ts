@@ -12,12 +12,12 @@ export class SMTPServices {
     to,
     subject,
     sender = {
-      email: this.configService.get('SMTP_SENDER_EMAIL'),
-      name: this.configService.get('SMTP_SENDER_NAME'),
+      email: process.env.SMTP_SENDER_EMAIL,
+      name: process.env.SMTP_SENDER_NAME,
     },
   }: SendEmailDto) => {
     await axios.post(
-      `${this.configService.get('SMTP_API_URL')}/v3/smtp/email`,
+      `${process.env.SMTP_API_URL}/v3/smtp/email`,
       {
         htmlContent,
         to,
@@ -29,7 +29,7 @@ export class SMTPServices {
       },
       {
         headers: {
-          'api-key': this.configService.get('SMTP_API_KEY') || '',
+          'api-key': process.env.SMTP_API_KEY || '',
         },
       },
     );

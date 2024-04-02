@@ -18,7 +18,7 @@ export class PasswordlessService {
     private readonly configService: ConfigService,
     private readonly smtpServices: SMTPServices,
   ) {
-    this.expireIn = +this.configService.get('PASSWORDLESS_OTP_EXPIRE_IN_SEC');
+    this.expireIn = +process.env.PASSWORDLESS_OTP_EXPIRE_IN_SEC;
   }
 
   async sendOtp(email: string) {
@@ -56,10 +56,7 @@ export class PasswordlessService {
 
     await this.passwordlessRepository.delete({ email });
 
-    console.log(
-      'expireInVars',
-      this.configService.get('PASSWORDLESS_OTP_EXPIRE_IN_SEC'),
-    );
+    console.log('expireInVars', process.env.PASSWORDLESS_OTP_EXPIRE_IN_SEC);
     console.log('expireIn', this.expireIn);
     console.log('expireAt', this.getExpireAt().getTime().toString());
 

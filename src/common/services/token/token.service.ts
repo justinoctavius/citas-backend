@@ -12,8 +12,8 @@ export class TokenService {
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {
-    this.secret = this.configService.get('TOKEN_SECRET');
-    this.expiresIn = +this.configService.get('TOKEN_EXPIRES_IN_SEC');
+    this.secret = process.env.TOKEN_SECRET;
+    this.expiresIn = +process.env.TOKEN_EXPIRES_IN_SEC;
   }
 
   sign(payload: any): SignResponse {
