@@ -17,7 +17,7 @@ export class Passwordless extends BaseEntity {
   otp: string;
 
   @Column({ type: 'timestamp', nullable: false, name: 'expire_at' })
-  expireAt: Date;
+  expireAt: string;
 
   @Column({ name: 'expire_in' })
   expireIn: number;

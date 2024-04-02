@@ -40,7 +40,7 @@ export class PasswordlessService {
       where: { otp, email },
     });
 
-    if (!otpFounded || otpFounded?.expireAt?.getTime() <= Date.now()) {
+    if (!otpFounded || new Date(otpFounded?.expireAt).getTime() <= Date.now()) {
       return false;
     }
 
@@ -60,7 +60,7 @@ export class PasswordlessService {
       otp: otp,
       email,
       expireIn: this.expireIn,
-      expireAt: this.getExpireAt(),
+      expireAt: this.getExpireAt().getTime().toString(),
     });
 
     await this.passwordlessRepository.save(passwordlessOtp);
