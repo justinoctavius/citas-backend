@@ -1,2 +1,1 @@
-worker: npm install && npm run migration:run
 web: npm run start:prod
