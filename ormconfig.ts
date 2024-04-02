@@ -5,6 +5,7 @@ export const dataSourceOptions: DataSourceOptions = {
   url: process.env.DATABASE_URL,
   entities: ['dist/**/*.entity{.js, .ts}'],
   migrations: ['dist/src/database/migrations/*{.js,.ts}'],
+  ssl: true,
 };
 
 const dataSource = new DataSource(dataSourceOptions);
